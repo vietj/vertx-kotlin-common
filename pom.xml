@@ -9,15 +9,14 @@
     <version>10</version>
   </parent>
 
-  <groupId>io.vertx</groupId>
-  <artifactId>vertx-kotlin-common</artifactId>
+  <artifactId>vertx-kotlin-common-parent</artifactId>
 
   <version>3.4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
     <module>vertx-kotlin-common-compiler</module>
-    <module>vertx-kotlin-common-json</module>
+    <module>vertx-kotlin-common-ext</module>
   </modules>
 
   <properties>
