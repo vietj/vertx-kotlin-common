@@ -37,11 +37,11 @@ inline fun <T> json(block: Json.() -> T): T = Json.block()
 @Suppress("UNCHECKED_CAST") operator fun <T> JsonArray.get(index: Int): T = getValue(index) as T
 
 /**
- * Write a [JsonObject] to the write stream.
+ * Encode an object to json and write it to the write stream.
  *
- * @receiver a Vert.x [JsonObject]
+ * @receiver a Vert.x [WriteStream] of [Buffer]
  * @param pretty wether or not to pretty format the json output
- * @param block the json block to write
+ * @param block the json producing block to use
  * @return a reference to this, so the API can be used fluently
  */
 inline fun <S : WriteStream<Buffer>> S.write(pretty: Boolean = false, block: Json.() -> Any): S {
@@ -50,11 +50,11 @@ inline fun <S : WriteStream<Buffer>> S.write(pretty: Boolean = false, block: Jso
 }
 
 /**
- * End the write stream with a [JsonObject].
+ * End the stream with an object encoded to json.
  *
- * @receiver a Vert.x [JsonObject]
+ * @receiver a Vert.x [WriteStream] of [Buffer]
  * @param pretty wether or not to pretty format the json output
- * @param block the json block to write
+ * @param block the json producing block to use
  * @return a reference to this, so the API can be used fluently
  */
 inline fun <S : WriteStream<Buffer>> S.end(pretty: Boolean = false, block: Json.() -> Any): S {
@@ -68,8 +68,8 @@ inline fun <S : WriteStream<Buffer>> S.end(pretty: Boolean = false, block: Json.
  *
  * @receiver a Vert.x [Buffer]
  * @param pretty wether or not to pretty format the json output
- * @param block the json block to write
- * @return a reference to {@code this} so multiple operations can be appended together.
+ * @param block the json producing block to write
+ * @return a reference to this, so the API can be used fluently
  */
 inline fun Buffer.appendJson(pretty: Boolean = false, block: Json.() -> Any): Buffer =
     block(Json).let { json ->
