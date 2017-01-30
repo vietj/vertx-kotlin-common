@@ -3,14 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>vertx-kotlin-common</artifactId>
+    <artifactId>vertx-kotlin-common-parent</artifactId>
     <groupId>io.vertx</groupId>
     <version>3.4.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.vertx</groupId>
-  <artifactId>vertx-kotlin-common-json</artifactId>
+  <artifactId>vertx-kotlin-common-ext</artifactId>
   <version>3.4.0-SNAPSHOT</version>
 
   <build>
