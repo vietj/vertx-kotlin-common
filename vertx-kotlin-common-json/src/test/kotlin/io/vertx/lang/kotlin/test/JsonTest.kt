@@ -4,9 +4,10 @@ import io.vertx.core.*
 import io.vertx.core.buffer.*
 import io.vertx.core.json.*
 import io.vertx.core.streams.*
-import io.vertx.lang.kotlin.*
+import io.vertx.kotlin.common.json.*
 import org.junit.*
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.test.*
 
 class JsonTest {
@@ -83,13 +84,20 @@ class JsonTest {
     val b = Buffer.buffer().appendJson {
       obj("k" to "v")
     }
-
     assertEquals("{\"k\":\"v\"}", b.toString(Charsets.UTF_8))
+    val c = Buffer.buffer().appendJson{ User("Julien", "Viet") }
+    assertEquals("{\"firstName\":\"Julien\",\"lastName\":\"Viet\"}", c.toString(Charsets.UTF_8))
+    val d = Buffer.buffer().appendJson(true, { User("Julien", "Viet") })
+    assertEquals("{\n  \"firstName\" : \"Julien\",\n  \"lastName\" : \"Viet\"\n}", d.toString(Charsets.UTF_8))
+  }
+
+  class User(val firstName: String, val lastName: String) {
   }
 
   @Test
   fun testWriteJson() {
     val received = ArrayList<Buffer>()
+    val ended = AtomicBoolean()
     val ws = object : WriteStream<Buffer> {
       override fun write(data: Buffer?): WriteStream<Buffer> {
         data?.let { received.add(it) }
@@ -101,7 +109,7 @@ class JsonTest {
       }
 
       override fun end() {
-        throw UnsupportedOperationException("not implemented")
+        ended.set(true)
       }
 
       override fun drainHandler(handler: Handler<Void>?): WriteStream<Buffer> {
@@ -117,12 +125,20 @@ class JsonTest {
       }
     }
 
-    ws.writeJson {
+    ws.write {
       obj("k" to "v")
     }
-
     assertEquals(1, received.size)
     assertEquals("{\"k\":\"v\"}", received.single().toString(Charsets.UTF_8))
+    assertFalse(ended.get())
+
+    received.clear()
+    ws.end {
+      obj("k" to "v")
+    }
+    assertEquals(1, received.size)
+    assertEquals("{\"k\":\"v\"}", received.single().toString(Charsets.UTF_8))
+    assertTrue(ended.get())
   }
 
   @Test

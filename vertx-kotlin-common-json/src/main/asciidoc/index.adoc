@@ -1,0 +1,115 @@
+= Vert.x Kotlin extensions
+:toc: left
+
+== Vert.x Json extension
+
+=== Creating Json elements
+
+This extension provides idiomatic json type creation `io.vertx.core.json.JsonObject` and `io.vertx.core.json.JsonArray`.
+
+The `json` function can be used to simplify creation of json objects.
+
+[source,kotlin]
+----
+import io.vertx.kotlin.common.json.*
+
+json {
+  obj(
+    "name" to "Julien",
+    "age" to 43
+  )
+}
+----
+
+Likewise the `json` function can be used to simplify creation of json arrays.
+
+[source,kotlin]
+----
+import io.vertx.kotlin.common.json.*
+
+json {
+  array(
+    "tuna",
+    "salmon",
+    "sea bass"
+  )
+}
+----
+
+Both can be mixed together easily.
+
+[source,kotlin]
+----
+import io.vertx.kotlin.common.json.*
+
+json {
+  array(
+    obj("firstName" to "Julien", "lastName" to "Viet"),
+    obj("firstName" to "Clement", "lastName" to "Escoffier"),
+    obj("firstName" to "Thomas", "lastName" to "Segismont"),
+    obj("firstName" to "Paulo", "lastName" to "Lopes"),
+    obj("firstName" to "Julien", "lastName" to "Ponge")
+    )
+  )
+}
+----
+
+=== Accessing json elements
+
+The extension extends `JsonObject` and `JsonArray` with the subscript operator.
+
+[source,kotlin]
+----
+import io.vertx.kotlin.common.json.*
+
+val lastNameOfJulien = team[0]["lastName"]
+----
+
+=== Convenient json usage
+
+A few Vert.x types have been extended to support convenient Json usage.
+
+Kotlin extends Vert.x `Buffer` class with the `appendJson()` method.
+
+[source,kotlin]
+----
+import io.vertx.kotlin.common.json.*
+
+someBuffer.appendJson { obj("firstName" to "Julien", "lastName" to "Viet") };
+----
+
+It can also be used with plain objects that will be encoded using `io.vertx.core.json.Json#encode` method:
+
+[source,kotlin]
+----
+import io.vertx.kotlin.common.json.*
+
+someBuffer.appendJson { User("Julien", "Viet") };
+----
+
+Output can be pretty printed:
+
+[source,kotlin]
+----
+import io.vertx.kotlin.common.json.*
+
+someBuffer.appendJson(true, { User("Julien", "Viet") })
+----
+
+Likewise Vert.x `WriteStream` is extended with the `write` and `end` methods accepting Json.
+
+[source,kotlin]
+----
+import io.vertx.kotlin.common.json.*
+
+serverResponse.putHeader("Content-Type", "application/json").write({ User("Julien", "Viet") }).end()
+----
+
+Or more concisely:
+
+[source,kotlin]
+----
+import io.vertx.kotlin.common.json.*
+
+serverResponse.putHeader("Content-Type", "application/json").end({ User("Julien", "Viet") })
+----
